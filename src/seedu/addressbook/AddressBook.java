@@ -484,22 +484,19 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        final ArrayList<String> phone = new ArrayList<>();
-        final ArrayList<String> mail = new ArrayList<>();
+        //final ArrayList<String> phone = new ArrayList<>();
+        //final ArrayList<String> mail = new ArrayList<>();
 
         for (String[] person : getAllPersonsInAddressBook()) {
-            phone.add(getPhoneFromPerson(person));
-            mail.add(getEmailFromPerson(person));
 
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            final Set<String> numInPhone = new HashSet<>(phone);
-            final Set<String> mailInEmail = new HashSet<>(mail);
+            final Set<String> numInPhone = new HashSet<>(splitByWhitespace(getPhoneFromPerson(person)));
+            final Set<String> mailInEmail = new HashSet<>(splitByWhitespace(getEmailFromPerson(person)));
 
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             } else if (!Collections.disjoint(numInPhone, keywords)) {
                 matchedPersons.add(person);
-                break;
             } else if (!Collections.disjoint(mailInEmail, keywords)) {
                 matchedPersons.add(person);
                 break;
