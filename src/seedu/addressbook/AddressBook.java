@@ -14,14 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 /*
  * NOTE : =============================================================
@@ -90,6 +83,7 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
+    private static final String MESSAGE_SORTED_PERSONS = "Address book has been sorted";
 
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
@@ -107,13 +101,17 @@ public class AddressBook {
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
-                                        + "keywords (case-sensitive) and displays them as a list with index numbers.";
+                                        + "keywords (case-sensitive/phone numbers/email) and displays them as a list with index numbers.";
     private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
     private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
 
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts the list of persons in Address Book alphabetically.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -375,6 +373,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+            case COMMAND_SORT_WORD:
+            return executeSortAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -466,6 +466,9 @@ public class AddressBook {
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
     }
 
+    private static String getMessageForSortedPersonDisplaySummary(ArrayList<String[]> sortedPersons){
+        return String.format(MESSAGE_SORTED_PERSONS, sortedPersons.size());
+    }
     /**
      * Extracts keywords from the command arguments given for the find persons command.
      *
@@ -601,6 +604,14 @@ public class AddressBook {
         exitProgram();
     }
 
+    /**
+     * Request to sort the list in alphabetical order
+     */
+    private static String executeSortAddressBook() {
+        ArrayList<String[]> toBeShown = sortAddressBook();
+        showToUser(toBeShown);
+        return getMessageForSortedPersonDisplaySummary(toBeShown);
+    }
     /*
      * ===========================================
      *               UI LOGIC
@@ -841,6 +852,11 @@ public class AddressBook {
         ALL_PERSONS.addAll(persons);
     }
 
+    /** Sorts the list of persons in the address book alphabetically */
+    private static ArrayList<String[]> sortAddressBook() {
+        ALL_PERSONS.sort(Comparator.comparing());
+        return ALL_PERSONS;
+    }
 
     /*
      * ===========================================
@@ -1100,6 +1116,7 @@ public class AddressBook {
         return getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
                 + getUsageInfoForViewCommand() + LS
+                + getUsageInfoForSortCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
@@ -1151,7 +1168,11 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
     }
 
-
+    /** Returns the string sorted alphabetically */
+    private static String getUsageInfoForSortCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC)
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE);
+    }
     /*
      * ============================
      *         UTILITY METHODS
