@@ -370,7 +370,7 @@ public class AddressBook {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            return executeFindPersonsWithKeywords(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
             case COMMAND_SORT_WORD:
@@ -449,7 +449,7 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeFindPersons(String commandArgs) {
+    private static String executeFindPersonsWithKeywords(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithInformationContainingAnyKeyword(keywords);
         showToUser(personsFound);
