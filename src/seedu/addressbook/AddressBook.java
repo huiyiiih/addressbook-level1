@@ -451,7 +451,7 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final ArrayList<String[]> personsFound = getPersonsWithInformationContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
@@ -485,7 +485,7 @@ public class AddressBook {
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+    private static ArrayList<String[]> getPersonsWithInformationContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         //final ArrayList<String> phone = new ArrayList<>();
         //final ArrayList<String> mail = new ArrayList<>();
@@ -502,7 +502,6 @@ public class AddressBook {
                 matchedPersons.add(person);
             } else if (!Collections.disjoint(mailInEmail, keywords)) {
                 matchedPersons.add(person);
-                break;
             }
         }
         return matchedPersons;
@@ -851,7 +850,7 @@ public class AddressBook {
 
     /** Sorts the list of persons in the address book alphabetically */
     private static ArrayList<String[]> sortAddressBook() {
-        ALL_PERSONS.sort(Comparator.comparing());
+        ALL_PERSONS.sort(Comparator.comparing(index -> index[0]));
         return ALL_PERSONS;
     }
 
