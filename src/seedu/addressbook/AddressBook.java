@@ -848,7 +848,9 @@ public class AddressBook {
         ALL_PERSONS.addAll(persons);
     }
 
-    /** Sorts the list of persons in the address book alphabetically */
+    /**
+     * Sorts the list of persons in the address book alphabetically
+     */
     private static ArrayList<String[]> sortAddressBook() {
         ALL_PERSONS.sort(Comparator.comparing(index -> index[0]));
         return ALL_PERSONS;
@@ -895,7 +897,7 @@ public class AddressBook {
      * @param email without data prefix
      * @return constructed person
      */
-    private static String[] makePersonFromData(String name, String phone, String email) {
+    private static String[] consolidateInfoIntoData(String name, String phone, String email) {
         final String[] person = new String[PERSON_DATA_COUNT];
         person[PERSON_DATA_INDEX_NAME] = name;
         person[PERSON_DATA_INDEX_PHONE] = phone;
@@ -947,7 +949,7 @@ public class AddressBook {
         if (!isPersonDataExtractableFrom(encoded)) {
             return Optional.empty();
         }
-        final String[] decodedPerson = makePersonFromData(
+        final String[] decodedPerson = consolidateInfoIntoData(
                 extractNameFromPersonString(encoded),
                 extractPhoneFromPersonString(encoded),
                 extractEmailFromPersonString(encoded)
